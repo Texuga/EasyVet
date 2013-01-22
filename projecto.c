@@ -60,6 +60,20 @@ int estado; // 1-Activo 0-Desactivo
 } consultas;
 
 
+//Iniciação de variaveis
+void inicializacao(clientes *cliente){
+     int n;
+     int flag=0;
+     for(n=0;n<NC;n++){
+                       cliente[n].cod_cliente=0;
+                       cliente[n].estado=0;
+                       } 
+                       
+                       printf("Variaveis inicializadas com sucesso!");
+}
+
+
+
 //Lista os clientes
 void listarClientes(clientes *cliente){
      system ("cls");
@@ -173,6 +187,8 @@ void eliminarCliente(clientes *cliente){
 main(){
       
        clientes cliente[NC];
+       
+       inicializacao(cliente);
        listarClientes(cliente);
        adicionarCliente(cliente);
        listarClientes(cliente);
