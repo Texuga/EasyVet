@@ -5,9 +5,9 @@
 #define NC 200   //Numero máximo de clientes
 
 typedef struct{
-int dia;
-int mes;
-int ano;
+int dia[2];
+int mes[2];
+int ano[4];
 } datas;
 
 
@@ -16,7 +16,7 @@ int cod_cliente;
 char nome[20];
 datas data_nasc;
 char morada[100];
-long int telf[10];
+long int telf;
 int estado;   // 1-Activo 0- Desactivo
 } clientes;
 
@@ -67,11 +67,14 @@ void listarClientes(clientes *cliente){
      int flag=0;
      for(n=0;n<NC;n++){
             if (cliente[n].estado==1){
-                  printf("Cliente n. %d \n\n",&cliente[n].cod_cliente);
+                  printf("Cliente n. %d \n\n",cliente[n].cod_cliente);
                   printf("Nome: %s\n ",cliente[n].nome);
-                  printf("Data de Nascimento: %d/%d/%d\n",cliente[n].data_nasc.dia,cliente[n].data_nasc.mes,cliente[n].data_nasc.ano);
-                  printf("Telefone: %ld",&cliente[n].telf);
-                  printf("Morada: %s",&cliente[n].morada);  
+                  printf("Data de Nascimento: %d/%d/%d\n",
+                  cliente[n].data_nasc.dia[0],
+                  cliente[n].data_nasc.mes[0],
+                  cliente[n].data_nasc.ano[0]);
+                  printf("Telefone: %ld\n",cliente[n].telf);
+                  printf("Morada: %s\n\n",cliente[n].morada);  
                   flag=1;                   
                                        
              }          
@@ -95,12 +98,12 @@ void adicionarCliente(clientes *cliente){
                 srand(time(NULL));
                 cliente[n].cod_cliente=rand()%9999; // Numero gerado aleatoriamente 
                 printf("Cliente n. %d \n\n",cliente[n].cod_cliente);
-                printf("Nome: "); scanf("%s",cliente[n].nome); fflush(stdin);
-                printf("Data de Nascimento: \nDia: "); scanf("%d",cliente[n].data_nasc.dia);
-                printf("Mes: "); scanf("%d",cliente[n].data_nasc.mes);
-                printf("Ano: "); scanf("%d",cliente[n].data_nasc.ano);
+                printf("Nome: "); gets(cliente[n].nome); fflush(stdin);
+                printf("Data de Nascimento: \nDia: "); scanf("%d",&cliente[n].data_nasc.dia);
+                printf("Mes: "); scanf("%d",&cliente[n].data_nasc.mes);
+                printf("Ano: "); scanf("%d",&cliente[n].data_nasc.ano);
                 printf("Telefone: "); scanf("%ld",&cliente[n].telf);  fflush(stdin);
-                printf("Morada: "); scanf("%s",cliente[n].morada);fflush(stdin);
+                printf("Morada: "); gets(cliente[n].morada);fflush(stdin);
                 cliente[n].estado=1;
                 system("cls");
                 printf("Cliente n. %d inserido com sucesso!\n\n",cliente[n].cod_cliente );
@@ -127,12 +130,12 @@ void editarCliente(clientes *cliente){
     for(n=0; n<NC;n++){
              if (cliente[n].cod_cliente==cod){
                 printf("Cliente n. %d \n\n",cliente[n].cod_cliente);
-                printf("Nome: "); scanf("%s",cliente[n].nome); fflush(stdin);
-                printf("Data de Nascimento: \nDia: "); scanf("%d",cliente[n].data_nasc.dia);
-                printf("Mes: "); scanf("%d",cliente[n].data_nasc.mes);
-                printf("Ano: "); scanf("%d",cliente[n].data_nasc.ano);
-                printf("Telefone: "); scanf("%ld",cliente[n].telf);  fflush(stdin);
-                printf("Morada: "); scanf("%s",cliente[n].morada);
+                printf("Nome: "); gets(cliente[n].nome); fflush(stdin);
+                printf("Data de Nascimento: \nDia: "); scanf("%d",&cliente[n].data_nasc.dia);
+                printf("Mes: "); scanf("%d",&cliente[n].data_nasc.mes);
+                printf("Ano: "); scanf("%d",&cliente[n].data_nasc.ano);
+                printf("Telefone: "); scanf("%ld",&cliente[n].telf);  fflush(stdin);
+                printf("Morada: "); gets(cliente[n].morada);
                 system("cls");
                 printf("Cliente n. %d alterado com sucesso!\n\n",cliente[n].cod_cliente );
                 n=NC;
@@ -157,7 +160,7 @@ void eliminarCliente(clientes *cliente){
                 cliente[n].estado=0;
                 flag=1;
                 printf("Cliente eliminado com sucesso!");
-                
+                n=NC;
              }
      }  if (flag==0)
         printf("Cliente inválido!");   
@@ -170,7 +173,7 @@ void eliminarCliente(clientes *cliente){
 main(){
       
        clientes cliente[NC];
-       //listarClientes(cliente);
+       listarClientes(cliente);
        adicionarCliente(cliente);
        listarClientes(cliente);
        adicionarCliente(cliente);
