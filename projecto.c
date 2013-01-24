@@ -5,9 +5,9 @@
 #define NC 200   //Numero máximo de clientes
 
 typedef struct{
-int dia[2];
-int mes[2];
-int ano[4];
+int dia;
+int mes;
+int ano;
 } datas;
 
 
@@ -84,9 +84,9 @@ void listarClientes(clientes *cliente){
                   printf("Cliente n. %d \n\n",cliente[n].cod_cliente);
                   printf("Nome: %s\n ",cliente[n].nome);
                   printf("Data de Nascimento: %d/%d/%d\n",
-                  cliente[n].data_nasc.dia[0],
-                  cliente[n].data_nasc.mes[0],
-                  cliente[n].data_nasc.ano[0]);
+                  cliente[n].data_nasc.dia,
+                  cliente[n].data_nasc.mes,
+                  cliente[n].data_nasc.ano);
                   printf("Telefone: %ld\n",cliente[n].telf);
                   printf("Morada: %s\n\n",cliente[n].morada);  
                   flag=1;                   
@@ -182,6 +182,61 @@ void eliminarCliente(clientes *cliente){
 
 }
 
+void carregar_dados(clientes *cliente){
+     
+     FILE *fc;
+     int n;
+     
+     if(!(fc=fopen("clientes.txt","r"))){
+                                         if(!(fc=fopen("clientes.txt","a"))){
+                                                                             printf("Erro na criação do ficheiro!"); 
+                                                                             getch(); 
+                                                                             exit(0);
+                                          } else{
+                                                                             printf("Ficheiro clientes.txt criado com sucesso!");
+                                                                             getch();
+                                                                             return(0);
+                                                 }                             
+     }
+     for (n=0;n<NC;n++){
+         fscanf(fc,"%d\n",                   &cliente[n].cod_cliente);
+         fgets(cliente[n].nome,20,fc);
+         fscanf(fc,"%d\n%d\n%d\n",           &cliente[n].data_nasc.dia,
+                                             &cliente[n].data_nasc.mes,
+                                             &cliente[n].data_nasc.ano);
+         fgets(cliente[n].morada,100,fc);                                          
+         fscanf(fc,"%ld\n%d",                &cliente[n].telf,
+                                             &cliente[n].estado);                           
+         
+         }
+         
+     
+}
+
+void guardar_dados(clientes *cliente){
+     FILE *fc;
+     int n;
+     
+     fc=fopen("clientes.txt","a");
+     
+     for (n=0;n<NC;n++){
+         if(cliente[n].estado==1){
+         fprintf(fc,"%d\n",                   cliente[n].cod_cliente);
+         fputs(cliente[n].nome,fc);
+         fprintf(fc,"%d\n%d\n%d\n",           cliente[n].data_nasc.dia,
+                                              cliente[n].data_nasc.mes,
+                                              cliente[n].data_nasc.ano);
+         fputs(cliente[n].morada,fc);                                          
+         fprintf(fc,"%ld\n%d",                cliente[n].telf,
+                                              cliente[n].estado);                           
+         } 
+         
+         }
+     
+     
+     
+}
+
 
 
 main(){
@@ -189,13 +244,12 @@ main(){
        clientes cliente[NC];
        
        inicializacao(cliente);
+       carregar_dados(cliente);
        listarClientes(cliente);
        adicionarCliente(cliente);
-       listarClientes(cliente);
        adicionarCliente(cliente);
-       editarCliente(cliente);
+       adicionarCliente(cliente);
        listarClientes(cliente);
-       eliminarCliente(cliente);
-       listarClientes(cliente);
+       guardar_dados(cliente);
 
        }
