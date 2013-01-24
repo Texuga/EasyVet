@@ -110,13 +110,39 @@ void adicionarCliente(clientes *cliente){
     for(n=0; n<NC;n++){
              if (cliente[n].estado!=1){
                 srand(time(NULL));
-                cliente[n].cod_cliente=rand()%9999; // Numero gerado aleatoriamente 
+                cliente[n].cod_cliente=rand()%9999; // Numero gerado aleatoriamente
                 printf("Cliente n. %d \n\n",cliente[n].cod_cliente);
-                printf("Nome: "); gets(cliente[n].nome); fflush(stdin);
-                printf("Data de Nascimento: \nDia: "); scanf("%d",&cliente[n].data_nasc.dia);
-                printf("Mes: "); scanf("%d",&cliente[n].data_nasc.mes);
-                printf("Ano: "); scanf("%d",&cliente[n].data_nasc.ano);
-                printf("Telefone: "); scanf("%ld",&cliente[n].telf);  fflush(stdin);
+                do{
+                                printf("Nome: "); gets(cliente[n].nome); fflush(stdin);
+                                
+                                if (cliente[n].nome[0]=='\0' || cliente[n].nome[0]==' ' || cliente[n].nome[0]=='\n'){
+                                          flag=0;
+                                          printf("Nome inválido!\n");
+                                }else
+                                          flag=1;
+                } while(flag==0);
+                do{
+                                 printf("Data de Nascimento: \nDia: "); scanf("%d",&cliente[n].data_nasc.dia);
+                                 printf("Mes: "); scanf("%d",&cliente[n].data_nasc.mes);
+                                 printf("Ano: "); scanf("%d",&cliente[n].data_nasc.ano);
+                                 if(cliente[n].data_nasc.dia>0 && cliente[n].data_nasc.dia<=31 && 
+                                    cliente[n].data_nasc.mes>0 && cliente[n].data_nasc.mes<=12 && 
+                                    cliente[n].data_nasc.ano>1850 && cliente[n].data_nasc.ano<=2000)
+                                                 flag=1;
+                                 else{
+                                                 flag=0;
+                                                 printf("Data de Nascimento Inválida!\n");
+                                 }                              
+                } while(flag==0);
+                do{
+                                 printf("Telefone: "); scanf("%ld",&cliente[n].telf);  fflush(stdin);
+                                 if(cliente[n].telf>900000000 && cliente[n].telf<999999999)
+                                                flag=1;
+                                 else{
+                                                flag=0;
+                                                printf("Número de Telf. inválido!\n");
+                                 }
+                } while(flag==0);
                 printf("Morada: "); gets(cliente[n].morada);fflush(stdin);
                 cliente[n].estado=1;
                 system("cls");
@@ -144,12 +170,37 @@ void editarCliente(clientes *cliente){
     for(n=0; n<NC;n++){
              if (cliente[n].cod_cliente==cod){
                 printf("Cliente n. %d \n\n",cliente[n].cod_cliente);
-                printf("Nome: "); gets(cliente[n].nome); fflush(stdin);
-                printf("Data de Nascimento: \nDia: "); scanf("%d",&cliente[n].data_nasc.dia);
-                printf("Mes: "); scanf("%d",&cliente[n].data_nasc.mes);
-                printf("Ano: "); scanf("%d",&cliente[n].data_nasc.ano);
-                printf("Telefone: "); scanf("%ld",&cliente[n].telf);  fflush(stdin);
-                printf("Morada: "); gets(cliente[n].morada);
+                do{
+                                printf("Nome: %s ",cliente[n].nome); gets(cliente[n].nome); fflush(stdin);
+                                if (cliente[n].nome=="/0" || cliente[n].nome==" "){
+                                          flag=0;
+                                          printf("Nome inválido!\n");
+                                }else
+                                          flag=1;
+                } while(flag==0);
+                do{
+                                 printf("Data de Nascimento: \nDia: "); scanf("%d",&cliente[n].data_nasc.dia);
+                                 printf("Mes: "); scanf("%d",&cliente[n].data_nasc.mes);
+                                 printf("Ano: "); scanf("%d",&cliente[n].data_nasc.ano);
+                                 if(cliente[n].data_nasc.dia>0 && cliente[n].data_nasc.dia<=31 && 
+                                    cliente[n].data_nasc.mes>0 && cliente[n].data_nasc.mes<=12 && 
+                                    cliente[n].data_nasc.ano>1850 && cliente[n].data_nasc.ano<=2000)
+                                                 flag=1;
+                                 else{
+                                                 flag=0;
+                                                 printf("Data de Nascimento Inválida!\n");
+                                 }                              
+                } while(flag==0);
+                do{
+                                 printf("Telefone: %ld",cliente[n].telf); scanf("%ld",&cliente[n].telf);  fflush(stdin);
+                                 if(cliente[n].telf>900000000 && cliente[n].telf<999999999)
+                                                flag=1;
+                                 else{
+                                                flag=0;
+                                                printf("Número de Telf. inválido!\n");
+                                 }
+                } while(flag==0);
+                printf("Morada: %s ",cliente[n].morada); gets(cliente[n].morada);
                 system("cls");
                 printf("Cliente n. %d alterado com sucesso!\n\n",cliente[n].cod_cliente );
                 n=NC;
@@ -252,8 +303,7 @@ main(){
        carregar_dados(cliente);
        listarClientes(cliente);
        adicionarCliente(cliente);
-       adicionarCliente(cliente);
-       adicionarCliente(cliente);
+       editarCliente(cliente);
        listarClientes(cliente);
        guardar_dados(cliente);
 
