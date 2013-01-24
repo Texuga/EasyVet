@@ -197,20 +197,25 @@ void carregar_dados(clientes *cliente){
                                                                              getch();
                                                                              return(0);
                                                  }                             
-     }
+   } else {
+      while (feof(fc) == 0) {     
      for (n=0;n<NC;n++){
          fscanf(fc,"%d\n",                   &cliente[n].cod_cliente);
          fgets(cliente[n].nome,20,fc);
-         fscanf(fc,"%d\n%d\n%d\n",           &cliente[n].data_nasc.dia,
+         fscanf(fc,"\n%d\n%d\n%d\n",           &cliente[n].data_nasc.dia,
                                              &cliente[n].data_nasc.mes,
                                              &cliente[n].data_nasc.ano);
          fgets(cliente[n].morada,100,fc);                                          
-         fscanf(fc,"%ld\n%d",                &cliente[n].telf,
-                                             &cliente[n].estado);                           
+         fscanf(fc,"\n%ld\n%d",                &cliente[n].telf,
+                                             &cliente[n].estado); 
+                                  
          
          }
-         
+     } 
+        printf("Dados carregados com sucesso!\n");
+        getch();  
      
+     }
 }
 
 void guardar_dados(clientes *cliente){
@@ -221,13 +226,13 @@ void guardar_dados(clientes *cliente){
      
      for (n=0;n<NC;n++){
          if(cliente[n].estado==1){
-         fprintf(fc,"%d\n",                   cliente[n].cod_cliente);
+         fprintf(fc,"\n%d\n",                   cliente[n].cod_cliente);
          fputs(cliente[n].nome,fc);
-         fprintf(fc,"%d\n%d\n%d\n",           cliente[n].data_nasc.dia,
+         fprintf(fc,"\n%d\n%d\n%d\n",           cliente[n].data_nasc.dia,
                                               cliente[n].data_nasc.mes,
                                               cliente[n].data_nasc.ano);
          fputs(cliente[n].morada,fc);                                          
-         fprintf(fc,"%ld\n%d",                cliente[n].telf,
+         fprintf(fc,"\n%ld\n%d",                cliente[n].telf,
                                               cliente[n].estado);                           
          } 
          
