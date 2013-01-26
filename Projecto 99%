@@ -1,0 +1,1223 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+#define  NC        200   //Numero máximo de clientes
+#define  NA        400 //Numero máximo de animais
+#define  NM        50  //Numero máximo de médicos
+#define  NCO       1000 //Numero máximo de consultas
+
+
+typedef struct{
+int dia;
+int mes;
+int ano;
+} datas;
+
+
+typedef struct{
+int cod_cliente;
+char nome[20];
+datas data_nasc;
+char morada[100];
+long int telf;
+int estado;   // 1-Activo 0- Desactivo
+} clientes;
+
+
+
+typedef struct{
+int n_medico;
+char nome[50];
+datas data_nasc;
+char morada[100];
+long int telf;
+int estado; // 1-Activo 0- Desactivo
+} medicos;
+
+typedef struct{
+int n_animal;
+char nome[50];
+datas data_nasc;
+char tipo_animal[20];
+char raca[50];
+int estado; // 1-Activo 0- Desactivo
+} animais;
+
+
+typedef struct{
+int hora;
+int minutos;
+} horas;
+
+
+
+typedef struct{
+int n_consulta;
+int n_cliente;
+int n_animal;
+int n_medico;
+datas data;
+horas hora;
+char observacoes[100];
+int estado; // 1-Activo 0-Desactivo
+} consultas;
+
+
+//Iniciação de variaveis
+void inicializacao(clientes *cliente, medicos *medico, animais *animal, consultas *consulta){
+     int n;
+     for(n=0;n<NC;n++){
+                       cliente[n].cod_cliente=0;
+                       cliente[n].estado=0;
+                       
+                      }
+     for(n=0;n<NM;n++){                
+                       medico[n].n_medico=0;
+                       medico[n].estado=0;
+                       }
+     for(n=0;n<NA;n++){
+                       animal[n].n_animal=0;
+                       animal[n].estado=0;
+                       }
+     for(n=0;n<NCO;n++){
+                       consulta[n].n_consulta=0;
+                       consulta[n].estado=0;
+                       }
+                       
+                       
+                       printf("Variaveis inicializadas com sucesso!\n");
+}
+
+// ************************************************MODULO CLIENTES!!**********************************************
+
+//Lista os clientes
+void listarClientes(clientes *cliente){
+     system ("cls");
+     int n;
+     int flag=0;
+     for(n=0;n<NC;n++){
+            if (cliente[n].estado==1){
+                  printf("Cliente n. %d \n\n",cliente[n].cod_cliente);
+                  printf("Nome: %s\n ",cliente[n].nome);
+                  printf("Data de Nascimento: %d/%d/%d\n",
+                  cliente[n].data_nasc.dia,
+                  cliente[n].data_nasc.mes,
+                  cliente[n].data_nasc.ano);
+                  printf("Telefone: %ld\n",cliente[n].telf);
+                  printf("Morada: %s\n\n",cliente[n].morada);  
+                  flag=1;                   
+                                       
+             }          
+                       
+                       
+         }if (flag==0)
+                printf("Lista de Clientes vazia!");
+         getch();
+     
+}
+
+
+//Adiciona cliente
+void adicionarCliente(clientes *cliente){
+
+    system ("cls");
+    int n;
+    int flag=0;
+    for(n=0; n<NC;n++){
+             if (cliente[n].estado!=1){
+                srand(time(NULL));
+                cliente[n].cod_cliente=rand()%9999; // Numero gerado aleatoriamente
+                printf("Cliente n. %d \n\n",cliente[n].cod_cliente);
+                do{
+                                printf("Nome: "); gets(cliente[n].nome); fflush(stdin);
+                                
+                                if (cliente[n].nome[0]=='\0' || cliente[n].nome[0]==' ' || cliente[n].nome[0]=='\n'){
+                                          flag=0;
+                                          printf("Nome inválido!\n");
+                                }else
+                                          flag=1;
+                } while(flag==0);
+                do{
+                                 printf("Data de Nascimento: \nDia: "); scanf("%d",&cliente[n].data_nasc.dia);
+                                 printf("Mes: "); scanf("%d",&cliente[n].data_nasc.mes);
+                                 printf("Ano: "); scanf("%d",&cliente[n].data_nasc.ano);
+                                 if(cliente[n].data_nasc.dia>0 && cliente[n].data_nasc.dia<=31 && 
+                                    cliente[n].data_nasc.mes>0 && cliente[n].data_nasc.mes<=12 && 
+                                    cliente[n].data_nasc.ano>1850 && cliente[n].data_nasc.ano<=2000)
+                                                 flag=1;
+                                 else{
+                                                 flag=0;
+                                                 printf("Data de Nascimento Inválida!\n");
+                                 }                              
+                } while(flag==0);
+                do{
+                                 printf("Telefone: "); scanf("%ld",&cliente[n].telf);  fflush(stdin);
+                                 if(cliente[n].telf>900000000 && cliente[n].telf<999999999)
+                                                flag=1;
+                                 else{
+                                                flag=0;
+                                                printf("Número de Telf. inválido!\n");
+                                 }
+                } while(flag==0);
+                printf("Morada: "); gets(cliente[n].morada);fflush(stdin);
+                cliente[n].estado=1;
+                system("cls");
+                printf("Cliente n. %d inserido com sucesso!\n\n",cliente[n].cod_cliente );
+                n=NC;
+                flag=1;
+                getch();
+                }
+             } if (flag==0){
+                  printf("Número máximo de clientes atingido ou erro na introdução de novo cliente! Por favor contactar os serviços técnicos!");
+                  getch();
+             }
+
+}
+
+
+
+//Edita os dados do cliente
+void editarCliente(clientes *cliente){
+
+     system ("cls");
+    int n,cod,flag=0;
+    printf("Escreva o número do cliente que quer editar: ");
+    scanf("%d",&cod); fflush(stdin);
+    for(n=0; n<NC;n++){
+             if (cliente[n].cod_cliente==cod){
+                printf("Cliente n. %d \n\n",cliente[n].cod_cliente);
+                do{
+                                printf("Nome: %s ",cliente[n].nome); gets(cliente[n].nome); fflush(stdin);
+                                if (cliente[n].nome[0]=='\0' || cliente[n].nome[0]==' ' || cliente[n].nome[0]=='\n'){
+                                          flag=0;
+                                          printf("Nome inválido!\n");
+                                }else
+                                          flag=1;
+                } while(flag==0);
+                do{
+                                 printf("Data de Nascimento: \nDia: "); scanf("%d",&cliente[n].data_nasc.dia);
+                                 printf("Mes: "); scanf("%d",&cliente[n].data_nasc.mes);
+                                 printf("Ano: "); scanf("%d",&cliente[n].data_nasc.ano);
+                                 if(cliente[n].data_nasc.dia>0 && cliente[n].data_nasc.dia<=31 && 
+                                    cliente[n].data_nasc.mes>0 && cliente[n].data_nasc.mes<=12 && 
+                                    cliente[n].data_nasc.ano>1850 && cliente[n].data_nasc.ano<=2000)
+                                                 flag=1;
+                                 else{
+                                                 flag=0;
+                                                 printf("Data de Nascimento Inválida!\n");
+                                 }                              
+                } while(flag==0);
+                do{
+                                 printf("Telefone: %ld",cliente[n].telf); scanf("%ld",&cliente[n].telf);  fflush(stdin);
+                                 if(cliente[n].telf>900000000 && cliente[n].telf<999999999)
+                                                flag=1;
+                                 else{
+                                                flag=0;
+                                                printf("Número de Telf. inválido!\n");
+                                 }
+                } while(flag==0);
+                printf("Morada: %s ",cliente[n].morada); gets(cliente[n].morada);
+                system("cls");
+                printf("Cliente n. %d alterado com sucesso!\n\n",cliente[n].cod_cliente );
+                n=NC;
+                flag=1;
+                getch();
+               }
+    } if (flag==0){
+       printf("Cliente inválido!");
+       getch();
+         }
+
+     }
+     
+//Elimina Cliente
+void eliminarCliente(clientes *cliente){
+     system ("cls");
+    int n,cod,flag=0;
+    printf("Escreva o número do cliente que quer eliminar: ");
+    scanf("%d",&cod); fflush(stdin);
+    for(n=0; n<NC;n++){
+             if (cliente[n].cod_cliente==cod){
+                cliente[n].estado=0;
+                flag=1;
+                printf("Cliente eliminado com sucesso!");
+                getch();
+                n=NC;
+             }
+     }  if (flag==0)
+        printf("Cliente inválido!");   
+        getch();
+
+}
+
+
+
+/************************************************MODULO MEDICOS**************************************************************************/
+
+//LISTA TODOS OS MEDICOS
+
+void listarMedicos(medicos *medico){
+     system ("cls");
+     int n;
+     int flag=0;
+     for(n=0;n<NM;n++){
+            if (medico[n].estado==1){
+                  printf("Médico n. %d \n\n",medico[n].n_medico);
+                  printf("Nome: %s\n ",medico[n].nome);
+                  printf("Data de Nascimento: %d/%d/%d\n",
+                  medico[n].data_nasc.dia,
+                  medico[n].data_nasc.mes,
+                  medico[n].data_nasc.ano);
+                  printf("Telefone: %ld\n",medico[n].telf);
+                  printf("Morada: %s\n\n",medico[n].morada);  
+                  flag=1;                   
+                                       
+             }          
+                       
+                       
+         }if (flag==0)
+                printf("Lista de Médicos vazia!");
+         getch();
+     
+}
+
+
+
+//ADICIONA NOVO MÉDICO
+
+void adicionarMedico(medicos * medico){
+system ("cls");
+    int n;
+    int flag=0;
+    for(n=0; n<NM;n++){
+             if (medico[n].estado!=1){
+                srand(time(NULL));
+                medico[n].n_medico=rand()%9999; // Numero gerado aleatoriamente
+                printf("Médico n. %d \n\n",medico[n].n_medico);
+                do{
+                                printf("Nome: "); gets(medico[n].nome); fflush(stdin);
+                                
+                                if (medico[n].nome[0]=='\0' || medico[n].nome[0]==' ' || medico[n].nome[0]=='\n'){
+                                          flag=0;
+                                          printf("Nome inválido!\n");
+                                }else
+                                          flag=1;
+                } while(flag==0);
+                do{
+                                 printf("Data de Nascimento: \nDia: "); scanf("%d",&medico[n].data_nasc.dia);
+                                 printf("Mes: "); scanf("%d",&medico[n].data_nasc.mes);
+                                 printf("Ano: "); scanf("%d",&medico[n].data_nasc.ano);
+                                 if(medico[n].data_nasc.dia>0 && medico[n].data_nasc.dia<=31 && 
+                                    medico[n].data_nasc.mes>0 && medico[n].data_nasc.mes<=12 && 
+                                    medico[n].data_nasc.ano>1850 && medico[n].data_nasc.ano<=2000)
+                                                 flag=1;
+                                 else{
+                                                 flag=0;
+                                                 printf("Data de Nascimento Inválida!\n");
+                                 }                              
+                } while(flag==0);
+                do{
+                                 printf("Telefone: "); scanf("%ld",&medico[n].telf);  fflush(stdin);
+                                 if(medico[n].telf>900000000 && medico[n].telf<999999999)
+                                                flag=1;
+                                 else{
+                                                flag=0;
+                                                printf("Número de Telf. inválido!\n");
+                                 }
+                } while(flag==0);
+                printf("Morada: "); gets(medico[n].morada);fflush(stdin);
+                medico[n].estado=1;
+                system("cls");
+                printf("Médico n. %d inserido com sucesso!\n\n",medico[n].n_medico );
+                n=NM;
+                flag=1;
+                getch();
+                }
+             } if (flag==0){
+                  printf("Número máximo de medicos atingido ou erro na introdução de novo médico! Por favor contactar os serviços técnicos!");
+                  getch();
+             }
+
+}
+
+
+//EDITA OS DADOS DO MEDICO
+
+void editarMedico(medicos *medico){
+
+     system ("cls");
+    int n,cod,flag=0;
+    printf("Escreva o número do cliente que quer editar: ");
+    scanf("%d",&cod); fflush(stdin);
+    for(n=0; n<NM;n++){
+             if (medico[n].n_medico==cod){
+                printf("Médico n. %d \n\n",medico[n].n_medico);
+                do{
+                                printf("Nome: %s ",medico[n].nome); gets(medico[n].nome); fflush(stdin);
+                                if (medico[n].nome[0]=='\0' || medico[n].nome[0]==' ' || medico[n].nome[0]=='\n' ){
+                                          flag=0;
+                                          printf("Nome inválido!\n");
+                                }else
+                                          flag=1;
+                } while(flag==0);
+                do{
+                                 printf("Data de Nascimento: \nDia: "); scanf("%d",&medico[n].data_nasc.dia);
+                                 printf("Mes: "); scanf("%d",&medico[n].data_nasc.mes);
+                                 printf("Ano: "); scanf("%d",&medico[n].data_nasc.ano);
+                                 if(medico[n].data_nasc.dia>0 && medico[n].data_nasc.dia<=31 && 
+                                    medico[n].data_nasc.mes>0 && medico[n].data_nasc.mes<=12 && 
+                                    medico[n].data_nasc.ano>1850 && medico[n].data_nasc.ano<=2000)
+                                                 flag=1;
+                                 else{
+                                                 flag=0;
+                                                 printf("Data de Nascimento Inválida!\n");
+                                 }                              
+                } while(flag==0);
+                do{
+                                 printf("Telefone: %ld Novo: ",medico[n].telf); scanf("%ld",&medico[n].telf);  fflush(stdin);
+                                 if(medico[n].telf>900000000 && medico[n].telf<999999999)
+                                                flag=1;
+                                 else{
+                                                flag=0;
+                                                printf("Número de Telf. inválido!\n");
+                                 }
+                } while(flag==0);
+                printf("Morada: %s ",medico[n].morada); gets(medico[n].morada);
+                system("cls");
+                printf("Médico n. %d alterado com sucesso!\n\n",medico[n].n_medico );
+                n=NM;
+                flag=1;
+                getch();
+               }
+    } if (flag==0){
+       printf("Medico inválido!");
+       getch();
+         }
+
+     }
+     
+//ELIMINA MÉDICO
+
+void eliminarMedico(medicos *medico){
+     system ("cls");
+    int n,cod,flag=0;
+    printf("Escreva o número do médico que quer eliminar: ");
+    scanf("%d",&cod); fflush(stdin);
+    for(n=0; n<NM;n++){
+             if (medico[n].n_medico==cod){
+                medico[n].estado=0;
+                flag=1;
+                printf("Médico eliminado com sucesso!");
+                n=NM;
+             }
+     }  if (flag==0)
+        printf("Médico inválido!");   
+        getch();
+
+}
+
+/******************************************!!!!!!!!************!!!!!MODULO ANIMAIS!!!!!!!*************!!!!!!!***************************/
+
+//LISTA TODOS OS ANIMAIS
+
+void listarAnimais(animais *animal){
+     system ("cls");
+     int n;
+     int flag=0;
+     for(n=0;n<NA;n++){
+            if (animal[n].estado==1){
+                  printf("Animal n. %d \n\n",animal[n].n_animal);
+                  printf("Nome: %s\n ",animal[n].nome);
+                  printf("Data de Nascimento: %d/%d/%d\n",
+                  animal[n].data_nasc.dia,
+                  animal[n].data_nasc.mes,
+                  animal[n].data_nasc.ano);
+                  printf("Tipo Animal: %s\n",animal[n].tipo_animal);
+                  printf("Raça: %s\n\n",animal[n].raca);  
+                  flag=1;                   
+                                       
+             }          
+                       
+                       
+         }if (flag==0)
+                printf("Lista de Animais vazia!");
+         getch();
+     
+}
+
+
+
+//ADICIONA NOVO ANIMAL
+
+void adicionarAnimal(animais * animal){
+system ("cls");
+    int n;
+    int flag=0;
+    for(n=0; n<NA;n++){
+             if (animal[n].estado!=1){
+                srand(time(NULL));
+                animal[n].n_animal=rand()%9999; // Numero gerado aleatoriamente
+                printf("Animal n. %d \n\n",animal[n].n_animal);
+                do{
+                                printf("Nome: "); gets(animal[n].nome); fflush(stdin);
+                                
+                                if (animal[n].nome[0]=='\0' || animal[n].nome[0]==' ' || animal[n].nome[0]=='\n'){
+                                          flag=0;
+                                          printf("Nome inválido!\n");
+                                }else
+                                          flag=1;
+                } while(flag==0);
+                do{
+                                 printf("Data de Nascimento: \nDia: "); scanf("%d",&animal[n].data_nasc.dia);
+                                 printf("Mes: "); scanf("%d",&animal[n].data_nasc.mes);
+                                 printf("Ano: "); scanf("%d",&animal[n].data_nasc.ano);
+                                 if(animal[n].data_nasc.dia>0 && animal[n].data_nasc.dia<=31 && 
+                                    animal[n].data_nasc.mes>0 && animal[n].data_nasc.mes<=12 && 
+                                    animal[n].data_nasc.ano>1950 && animal[n].data_nasc.ano<=2013)
+                                                 flag=1;
+                                 else{
+                                                 flag=0;
+                                                 printf("Data de Nascimento Inválida!\n");
+                                 }                              
+                } while(flag==0);
+                do{
+                                 printf("Tipo Animal: "); gets(animal[n].tipo_animal);  fflush(stdin);
+                                 if (animal[n].tipo_animal[0]=='\0' || animal[n].tipo_animal[0]==' ' || animal[n].tipo_animal[0]=='\n'){
+                                          flag=0;
+                                          printf("Tipo Animal inválido!\n");
+                                }else
+                                          flag=1;
+                } while(flag==0);
+                printf("\nRaça: "); gets(animal[n].raca); fflush(stdin);
+                animal[n].estado=1;
+                system("cls");
+                printf("Animal n. %d inserido com sucesso!\n\n",animal[n].n_animal );
+                n=NA;
+                flag=1;
+                getch();
+                }
+             } if (flag==0){
+                  printf("Número máximo de animais atingido ou erro na introdução de novo animal! Por favor contactar os serviços técnicos!");
+                  getch();
+             }
+
+}
+
+
+//EDITA OS DADOS DO ANIMAL
+
+void editarAnimal(animais *animal){
+
+     system ("cls");
+    int n,cod,flag=0;
+    printf("Escreva o número do cliente que quer editar: ");
+    scanf("%d",&cod); fflush(stdin);
+    for(n=0; n<NA;n++){
+             if (animal[n].n_animal==cod){
+                printf("Médico n. %d \n\n",animal[n].n_animal);
+                do{
+                                printf("Nome: %s ",animal[n].nome); gets(animal[n].nome); fflush(stdin);
+                                if (animal[n].nome[0]=='\0' || animal[n].nome[0]==' ' || animal[n].nome[0]=='\n' ){
+                                          flag=0;
+                                          printf("Nome inválido!\n");
+                                }else
+                                          flag=1;
+                } while(flag==0);
+                do{
+                                  printf("Data de Nascimento: \nDia: "); scanf("%d",&animal[n].data_nasc.dia);
+                                 printf("Mes: "); scanf("%d",&animal[n].data_nasc.mes);
+                                 printf("Ano: "); scanf("%d",&animal[n].data_nasc.ano);
+                                 if(animal[n].data_nasc.dia>0 && animal[n].data_nasc.dia<=31 && 
+                                    animal[n].data_nasc.mes>0 && animal[n].data_nasc.mes<=12 && 
+                                    animal[n].data_nasc.ano>1850 && animal[n].data_nasc.ano<=2000)
+                                                 flag=1;
+                                 else{
+                                                 flag=0;
+                                                 printf("Data de Nascimento Inválida!\n");
+                                 }                              
+                } while(flag==0);
+                do{
+                                 printf("Tipo Animal: "); gets(animal[n].tipo_animal);  fflush(stdin);
+                                 if (animal[n].tipo_animal[0]=='\0' || animal[n].tipo_animal[0]==' ' || animal[n].tipo_animal[0]=='\n'){
+                                          flag=0;
+                                          printf("Tipo Animal inválido!\n");
+                                }else
+                                          flag=1;
+                } while(flag==0);
+                printf("\nRaça: "); gets(animal[n].raca); fflush(stdin);
+                animal[n].estado=1;
+                system("cls");
+                printf("Animal n. %d modificado com sucesso!\n\n",animal[n].n_animal );
+                n=NA;
+                flag=1;
+                getch();
+               }
+    } if (flag==0){
+       printf("Animal inválido!");
+       getch();
+         }
+
+     }
+     
+//ELIMINA ANIMAL
+
+void eliminarAnimal (animais *animal){
+     system ("cls");
+    int n,cod,flag=0;
+    printf("Escreva o número do animal que quer eliminar: ");
+    scanf("%d",&cod); fflush(stdin);
+    for(n=0; n<NA;n++){
+             if (animal[n].n_animal==cod){
+                animal[n].estado=0;
+                flag=1;
+                printf("Animal eliminado com sucesso!");
+                n=NA;
+             }
+     }  if (flag==0)
+        printf("Animal inválido!");   
+        getch();
+
+}
+
+
+/****************************************!!!!!*********************!!!MODULO CONSULTAS!!!********************!!!****************************/
+
+//LISTA TODAS AS CONSULTAS
+
+void listarConsultas(consultas *consulta, clientes *cliente, animais *animal, medicos *medico){
+     system ("cls");
+     int n,i;
+     int flag=0;
+     for(n=0;n<NCO;n++){
+            if (consulta[n].estado==1){
+                  printf("Consulta n. %d \n\n",consulta[n].n_consulta);
+                  for(i=0;i<NC;n++){
+                                    if(consulta[n].n_cliente==cliente[i].cod_cliente){
+                                            printf("Cliente: %s\n ",cliente[i].nome);
+                                            i=NC;
+                                    }
+                                    }
+                  for(i=0;i<NA;n++){
+                                 if(consulta[n].n_animal==animal[i].n_animal){                    
+                                           printf("Animal: %s\n",animal[i].nome);
+                                             i=NA;
+                                              }
+                                    }
+                  for(i=0;i<NM;n++){
+                                 if(consulta[n].n_medico==medico[i].n_medico){
+                                          printf("Médico: %s\n",medico[i].nome);
+                                          i=NM;
+                                          }
+                                    }                
+                                          
+                  printf("Data: %d\%d\%d\n",consulta[n].data.dia,consulta[n].data.mes,consulta[n].data.ano);
+                  printf("Hora: %d\%d\n",consulta[n].hora.hora,consulta[n].hora.minutos);
+                  printf("Observações: %s\n",consulta[n].observacoes);  
+                  flag=1;                   
+                         
+             }          
+                       
+                       
+         }if (flag==0)
+                printf("Lista de Consultas vazia!");
+         getch();
+     
+}
+
+
+//VISUALIZAR UMA CONSULTA
+
+void listarConsulta(consultas *consulta, clientes *cliente, animais *animal, medicos *medico){
+     system ("cls");
+     int n,i,cod;
+     int flag=0;
+     printf("Introduza o código da consultar que quer visualizar: ");
+     scanf("%d",cod);
+     for(n=0;n<NCO;n++){
+            if (consulta[n].n_consulta==cod && consulta[n].estado==1){
+                  printf("Consulta n. %d \n\n",consulta[n].n_consulta);
+                  for(i=0;i<NC;n++){
+                                    if(consulta[n].n_cliente==cliente[i].cod_cliente){
+                                            printf("Cliente: %s\n ",cliente[i].nome);
+                                            i=NC;
+                                    }
+                                    }
+                  for(i=0;i<NA;n++){
+                                 if(consulta[n].n_animal==animal[i].n_animal){                    
+                                           printf("Animal: %s\n",animal[i].nome);
+                                             i=NA;
+                                              }
+                                    }
+                  for(i=0;i<NM;n++){
+                                 if(consulta[n].n_medico==medico[i].n_medico){
+                                          printf("Médico: %s\n",medico[i].nome);
+                                          i=NM;
+                                          }
+                                    }                
+                                          
+                  printf("Data: %d\%d\%d",consulta[n].data.dia,consulta[n].data.mes,consulta[n].data.ano);
+                  printf("Hora: %d\%d",consulta[n].hora.hora,consulta[n].hora.minutos);  
+                  printf("Observações: %s\n",consulta[n].observacoes);  
+                  flag=1;                   
+                         
+             }          
+                       
+                       
+         }if (flag==0)
+                printf("Consulta Inválida!");
+         getch();
+}
+
+//ADICIONA NOVA CONSULTA
+
+void adicionarConsulta(consultas * consulta, clientes *cliente, animais *animal, medicos *medico){
+system ("cls");
+    int n,i;
+    int flag=0;
+    for(n=0; n<NCO;n++){
+             if (consulta[n].estado!=1){
+                srand(time(NULL));
+                consulta[n].n_consulta=rand()%9999; // Numero gerado aleatoriamente
+                printf("Consulta n. %d \n\n",consulta[n].n_consulta);
+                do{
+                                printf("Nº Cliente: "); scanf("%d",consulta[n].n_cliente); fflush(stdin);
+                                for(i=0;i<NC;i++){
+                                                  if(consulta[n].n_cliente==cliente[i].cod_cliente){
+                                                  flag=1;
+                                                  i=NC;
+                                                  }
+                                }
+                                 if(flag==0)
+                                 printf("Cliente inválido!"); 
+                                                          
+               }while(flag==0);
+                do{
+                                 printf("Nº Animal: "); scanf("%d",&consulta[n].n_animal);fflush(stdin);
+                                for(i=0;i<NA;i++){
+                                                  if(consulta[n].n_animal==animal[i].n_animal){
+                                                  flag=1;
+                                                  i=NA;
+                                                  }
+                                }
+                                if(flag==0)
+                                 printf("Cliente inválido!"); 
+                                                                             
+                } while(flag==0);
+                do{
+                                 printf("Nº Médico: "); scanf("%d",&consulta[n].n_medico);fflush(stdin);
+                                for(i=0;i<NM;i++){
+                                                  if(consulta[n].n_medico==medico[i].n_medico){
+                                                  flag=1;
+                                                  i=NM;
+                                                  }
+                                }
+                                if(flag==0)
+                                 printf("Médico inválido!"); 
+                                 
+                } while(flag==0);
+                printf("\nData:\nDia: "); scanf("%d",&consulta[n].data.dia); fflush(stdin);
+                printf("\nMes: "); scanf("%d",&consulta[n].data.mes); fflush(stdin);
+                printf("\nAno: "); scanf("%d",&consulta[n].data.ano); fflush(stdin);
+                printf("\nHora: H:"); scanf("%d", &consulta[n].hora.hora);
+                printf("M: "); scanf("%d",&consulta[n].hora.minutos);
+                printf("\nObrservações: "); scanf("%s",&consulta[n].observacoes);
+                consulta[n].estado=1;
+                system("cls");
+                printf("Consulta n. %d inserido com sucesso!\n\n",consulta[n].n_consulta );
+                n=NCO;
+                flag=1;
+                getch();
+                }
+             } if (flag==0){
+                  printf("Número máximo de animais atingido ou erro na introdução de novo animal! Por favor contactar os serviços técnicos!");
+                  getch();
+             }
+
+}
+
+
+
+//EDITA OS DADOS DA CONSULTA
+
+void editarConsulta(consultas * consulta, clientes *cliente, animais *animal, medicos *medico){
+
+     system ("cls");
+    int n,cod,i;
+    int flag=0;
+    printf("Introduza o número da consulta que quer editar: ");
+    scanf("%d",&cod);
+    for(n=0; n<NCO;n++){
+             if (consulta[n].estado==1 && consulta[n].n_consulta==cod){
+                srand(time(NULL));
+                consulta[n].n_consulta=rand()%9999; // Numero gerado aleatoriamente
+                printf("Consulta n. %d \n\n",consulta[n].n_consulta);
+                do{
+                                printf("Nº Cliente: "); scanf("%d",consulta[n].n_cliente); fflush(stdin);
+                                for(i=0;i<NC;i++){
+                                                  if(consulta[n].n_cliente==cliente[i].cod_cliente){
+                                                  flag=1;
+                                                  i=NC;
+                                                  }
+                                }
+                                 if(flag==0)
+                                 printf("Cliente inválido!"); 
+                                                          
+               }while(flag==0);
+                do{
+                                 printf("Nº Animal: "); scanf("%d",&consulta[n].n_animal);fflush(stdin);
+                                for(i=0;i<NA;i++){
+                                                  if(consulta[n].n_animal==animal[i].n_animal){
+                                                  flag=1;
+                                                  i=NA;
+                                                  }
+                                }
+                                if(flag==0)
+                                 printf("Cliente inválido!"); 
+                                                                             
+                } while(flag==0);
+                do{
+                                 printf("Nº Médico: "); scanf("%d",&consulta[n].n_medico);fflush(stdin);
+                                for(i=0;i<NM;i++){
+                                                  if(consulta[n].n_medico==medico[i].n_medico){
+                                                  flag=1;
+                                                  i=NM;
+                                                  }
+                                }
+                                if(flag==0)
+                                 printf("Médico inválido!"); 
+                                 
+                } while(flag==0);
+                printf("\nData:\nDia: "); scanf("%d",&consulta[n].data.dia); fflush(stdin);
+                printf("\nMes: "); scanf("%d",&consulta[n].data.mes); fflush(stdin);
+                printf("\nAno: "); scanf("%d",&consulta[n].data.ano); fflush(stdin);
+                printf("\nHora: H:"); scanf("%d", &consulta[n].hora.hora);
+                printf("M: "); scanf("%d",&consulta[n].hora.minutos);
+                printf("\nObrservações: "); scanf("%s",consulta[n].observacoes);
+                consulta[n].estado=1;
+                system("cls");
+                printf("Consulta n. %d inserido com sucesso!\n\n",consulta[n].n_consulta );
+                n=NCO;
+                flag=1;
+                getch();
+                }
+             } if (flag==0){
+                  printf("Consulta Inválida!");
+                  getch();
+             }
+
+}
+     
+//ELIMINA CONSULTA
+
+void eliminarConsulta (consultas * consulta){
+     system ("cls");
+    int n,cod,flag=0;
+    printf("Escreva o número do consulta que quer eliminar: ");
+    scanf("%d",&cod); fflush(stdin);
+    for(n=0; n<NCO;n++){
+             if (consulta[n].n_consulta==cod){
+                consulta[n].estado=0;
+                flag=1;
+                printf("Consulta eliminada com sucesso!");
+                n=NCO;
+             }
+     }  if (flag==0)
+        printf("Consulta inválido!");   
+        getch();
+
+}
+
+
+
+/*************************************************!!!!!***********!!!!CARREGAMENTO DE DADOS!!!!!*******!!!!!!**********************************/
+
+
+void carregar_dados(clientes *cliente, medicos *medico, animais *animal, consultas *consulta){
+     
+     //**********FICHEIRO CLIENTES*********
+     
+     FILE *fc;
+     int n;
+     
+     if(!(fc=fopen("clientes.txt","r"))){
+                                         if(!(fc=fopen("clientes.txt","a"))){
+                                                                             printf("Erro na criação do ficheiro!"); 
+                                                                             getch();
+                                                                             exit(0); 
+                                                                             
+                                          } else{
+                                                                             printf("Ficheiro clientes.txt criado com sucesso!");
+                                                                             
+                                                                             
+                                                 }                             
+   } else {
+      while (feof(fc) == 0) {     
+     for (n=0;n<NC;n++){
+         fscanf(fc,"%d\n",                   &cliente[n].cod_cliente);
+         fgets(cliente[n].nome,20,fc);
+         fscanf(fc,"\n%d\n%d\n%d\n",           &cliente[n].data_nasc.dia,
+                                             &cliente[n].data_nasc.mes,
+                                             &cliente[n].data_nasc.ano);
+         fgets(cliente[n].morada,100,fc);                                          
+         fscanf(fc,"\n%ld\n%d",                &cliente[n].telf,
+                                             &cliente[n].estado); 
+                                  
+         
+         }
+     } 
+        printf("Dados Clientes carregados com sucesso!\n"); 
+     
+     }
+   
+   //************FICHEIRO MEDICOS*************
+   
+   FILE *fm;
+     
+     if(!(fc=fopen("medicos.txt","r"))){
+                                         if(!(fc=fopen("medicos.txt","a"))){
+                                                                             printf("Erro na criação do ficheiro!"); 
+                                                                             getch(); 
+                                                                             exit(0);
+                                          } else{
+                                                                             printf("Ficheiro medicos.txt criado com sucesso!");
+                                                                             
+                                                                             
+                                                 }                             
+   } else {
+      while (feof(fm) == 0) {     
+     for (n=0;n<NM;n++){
+         fscanf(fm,"%d\n",                   &medico[n].n_medico);
+         fgets(medico[n].nome,20,fm);
+         fscanf(fm,"\n%d\n%d\n%d\n",         &medico[n].data_nasc.dia,
+                                             &medico[n].data_nasc.mes,
+                                             &medico[n].data_nasc.ano);
+         fgets(medico[n].morada,100,fm);                                          
+         fscanf(fm,"\n%ld\n%d",                &medico[n].telf,
+                                             &medico[n].estado); 
+                                  
+         
+         }
+    
+     } 
+       printf("Dados Médicos carregados com sucesso!\n");    
+     
+    }  
+    
+    
+    //*****************FICHEIRO ANIMAIS****************
+     
+     FILE *fa;
+     
+     if(!(fa=fopen("animais.txt","r"))){
+                                         if(!(fc=fopen("animais.txt","a"))){
+                                                                             printf("Erro na criação do ficheiro!"); 
+                                                                             getch(); 
+                                                                             exit(0);
+                                          } else{
+                                                                             printf("Ficheiro animais.txt criado com sucesso!");
+                                                                             
+                                                                             
+                                                 }                             
+   } else {
+      while (feof(fa) == 0) {     
+     for (n=0;n<NA;n++){
+         fscanf(fa,"%d\n",                   &animal[n].n_animal);
+         fgets(animal[n].nome,20,fa);
+         fscanf(fa,"\n%d\n%d\n%d\n",         &animal[n].data_nasc.dia,
+                                             &animal[n].data_nasc.mes,
+                                             &animal[n].data_nasc.ano);
+         fgets(animal[n].tipo_animal,20,fa);
+         fscanf(fa,"\n%d\n",                 &animal[n].estado);                                         
+         fgets(animal[n].raca,20,fa);  
+                                  
+         
+         }
+     } 
+        printf("Dados Animais carregados com sucesso!\n");
+         
+     
+     }  
+     
+     
+      // ****************FICHEIRO CONSULTAS*********
+      
+     FILE *fic;
+    
+     
+     if(!(fic=fopen("consultas.txt","r"))){
+                                         if(!(fic=fopen("consultas.txt","a"))){
+                                                                             printf("Erro na criação do ficheiro!"); 
+                                                                             getch(); 
+                                                                             exit(0);
+                                          } else{
+                                                                             printf("Ficheiro consultas.txt criado com sucesso!");
+                                                                             
+                                                                             
+                                                 }                             
+   } else {
+     
+     while (feof(fic) == 0) {
+     for (n=0;n<NCO;n++){
+     
+         fscanf(fic,"\n%d\n%d\n%d\n%d\n%d\%d\%d\%d\%d",     &consulta[n].n_consulta,
+                                                            &consulta[n].n_cliente,
+                                                            &consulta[n].n_animal,
+                                                            &consulta[n].n_medico,
+                                                            &consulta[n].data.dia,&consulta[n].data.mes,&consulta[n].data.ano,
+                                                            &consulta[n].hora.hora,&consulta[n].hora.minutos);
+         fgets(consulta[n].observacoes,100,fic);
+         fscanf(fic,"\n%d",                                &consulta[n].estado);
+                         
+         }
+     } 
+         printf("Dados Consultas carregados com sucesso!\n");
+            
+     
+}
+printf("\n\n                      <Enter para continuar>");
+getch();
+}
+
+/*********************************************************!!!!!GRAVACAO DE DADOS!!!!!!!!!********************************************/
+
+void guardar_dados(clientes *cliente, medicos *medico, animais *animal, consultas *consulta){
+     FILE *fc;
+     int n;
+     
+     fc=fopen("clientes.txt","a");
+     
+     for (n=0;n<NC;n++){
+         if(cliente[n].estado==1){
+         fprintf(fc,"\n%d\n",                   cliente[n].cod_cliente);
+         fputs(cliente[n].nome,fc);
+         fprintf(fc,"\n%d\n%d\n%d\n",           cliente[n].data_nasc.dia,
+                                              cliente[n].data_nasc.mes,
+                                              cliente[n].data_nasc.ano);
+         fputs(cliente[n].morada,fc);                                          
+         fprintf(fc,"\n%ld\n%d",                cliente[n].telf,
+                                              cliente[n].estado);                           
+         } 
+         
+         }
+         
+    //***********FICHEIRO MEDICOS***********   
+      
+     FILE *fm;
+     
+     fm=fopen("medicos.txt","a");
+     
+     for (n=0;n<NM;n++){
+         if(medico[n].estado==1){
+         fprintf(fm,"\n%d\n",                medico[n].n_medico);
+         fputs(medico[n].nome,fm);
+         fprintf(fm,"\n%d\n%d\n%d\n",         medico[n].data_nasc.dia,
+                                              medico[n].data_nasc.mes,
+                                              medico[n].data_nasc.ano);
+         fputs(medico[n].morada,fm);                                          
+         fprintf(fm,"\n%ld\n%d",              medico[n].telf,
+                                              medico[n].estado);                           
+         } 
+         
+         }
+         
+         
+      //**************FICHEIRO ANIMAIS****************
+         
+         FILE *fa;
+    
+     
+     fc=fopen("animais.txt","a");
+     
+     for (n=0;n<NA;n++){
+         if(animal[n].estado==1){
+         fprintf(fa,"\n%d\n",                   animal[n].n_animal);
+         fputs(cliente[n].nome,fa);
+         fprintf(fc,"\n%d\n%d\n%d\n",         animal[n].data_nasc.dia,
+                                              animal[n].data_nasc.mes,
+                                              animal[n].data_nasc.ano);
+         fputs(animal[n].tipo_animal,fa);
+         fprintf(fc,"\n%d\n",                 animal[n].estado);
+         fputs(animal[n].raca,fa);                                          
+                                    
+         } 
+         
+         }
+    //*****************FICHEIRO CONSULTAS*************
+      FILE *fic;
+    
+     
+     fic=fopen("consultas.txt","a");
+     
+     for (n=0;n<NCO;n++){
+         if(consulta[n].estado==1){
+         fprintf(fic,"\n%d\n%d\n%d\n%d\n%d\%d\%d\%d\%d",    consulta[n].n_consulta,
+                                                            consulta[n].n_cliente,
+                                                            consulta[n].n_animal,
+                                                            consulta[n].n_medico,
+                                                            consulta[n].data.dia,consulta[n].data.mes,consulta[n].data.ano,
+                                                            consulta[n].hora.hora,consulta[n].hora.minutos);
+         fputs(consulta[n].observacoes,fa);
+         fprintf(fic,"\n%d",                                consulta[n].estado);
+                         
+         } 
+         
+         }   
+         
+     
+     
+     }
+
+
+//****************!!!!!*********************!!!!MENUS!!!!***********************!!!!!***********************************
+
+void menu_clientes (clientes *cliente) {
+     char op;
+     
+     do{
+      system("cls");
+      printf("\n     Clientes\n\n");
+      printf(" a) Inserir \n");
+      printf(" b) Modificar \n");
+      printf(" c) Consultar \n");
+      printf(" d) Eliminar \n");
+      printf(" v) Voltar ao Menu Anterior \n\n");
+      
+      op=toupper(getchar());
+      
+      
+      switch (op) {
+             case 'A':    adicionarCliente(cliente); break;
+             case 'B':  editarCliente(cliente); break;
+             case 'C':  listarClientes(cliente); break;
+             case 'D':   eliminarCliente(cliente);break;
+             case 'V':     return;
+             }
+      }while(op!='V');
+}
+
+
+
+void menu_medicos (medicos *medico) {
+     char op;
+     
+     do{
+      system("cls");
+      printf("\n     Médicos\n\n");
+      printf(" a) Inserir \n");
+      printf(" b) Modificar \n");
+      printf(" c) Consultar \n");
+      printf(" d) Eliminar \n");
+      printf(" v) Voltar ao Menu Anterior \n\n");
+      
+      op=toupper(getchar());
+      
+      switch (op) {
+             case 'A':     adicionarMedico(medico); break;
+             case 'B':     editarMedico(medico);    break;
+             case 'C':     listarMedicos(medico); break;
+             case 'D':     eliminarMedico(medico);  break;
+             case 'V':        return;
+             }
+      }while(op!='V');
+}
+
+void menu_animais (animais *animal) {
+     char op;
+   
+     
+     do{
+      system("cls");
+      printf("\n     Animais\n\n");
+      printf(" a) Inserir \n");
+      printf(" b) Modificar \n");
+      printf(" c) Consultar \n");
+      printf(" d) Eliminar \n");
+      printf(" v) Voltar ao Menu Anterior \n\n");
+      
+      op=toupper(getchar());
+      
+      
+      switch (op) {
+             case 'A':       adicionarAnimal(animal); break;
+             case 'B':     editarAnimal(animal);    break;
+             case 'C':     listarAnimais(animal);   break;
+             case 'D':      eliminarAnimal(animal);  break;
+             case 'V':        return;
+             }
+      }while(op!='V');
+}
+
+void menu_consultas (clientes *cliente, animais *animal, medicos *medico, consultas *consulta) {
+     char op;
+  
+     
+     do{
+      system("cls");
+      printf("\n     Consultas\n\n");
+      printf(" a) Nova Consulta \n");
+      printf(" b) Modificar \n");
+      printf(" c) Consultar \n");
+      printf(" d) Listar Todas \n");
+      printf(" e) Eliminar \n");
+      printf(" v) Voltar ao Menu Anterior \n\n");
+      
+      op=toupper(getchar());
+      
+      
+      switch (op) {
+             case 'A':       adicionarConsulta(consulta,cliente,animal,medico); break;
+             case 'B':       editarConsulta(consulta,cliente,animal,medico);    break;
+             case 'C':       listarConsulta(consulta,cliente,animal,medico);    break;
+             case 'D':       listarConsultas(consulta,cliente,animal,medico);   break;
+             case 'E':       eliminarConsulta(consulta);  break;
+             case 'V':       return;
+             }
+      }while(op!='V');
+}          
+    
+
+void menu_principal (clientes *cliente, medicos *medico, animais *animal, consultas *consulta) {
+char op;
+
+
+     do{
+        system("cls");
+        printf("\n     Menu\n\n");
+        printf(" a) Clientes \n");
+        printf(" b) Medicos \n");
+        printf(" c) Animais \n");
+        printf(" d) Consultas \n");
+        printf(" s) Sair \n\n");
+      
+      op=toupper(getchar());
+      
+      switch (op) {
+             case 'A': menu_clientes(cliente); break;
+             case 'B': menu_medicos(medico); break;
+             case 'C': menu_animais(animal); break;
+             case 'D': menu_consultas(cliente,animal,medico,consulta); break;
+             case 'S': return;
+             }
+      }while(op!='S');
+}    
+
+
+main(){
+      
+       clientes *cliente;
+       animais *animal;
+       medicos *medico;
+       consultas *consulta;
+       
+       cliente=(clientes*) calloc(NC,sizeof(clientes));
+       animal=(animais*) calloc(NA,sizeof(animais));
+       medico=(medicos*) calloc(NM,sizeof(medicos));
+       consulta=(consultas*) calloc(NCO,sizeof(consultas));
+       inicializacao(cliente,medico,animal,consulta);
+       carregar_dados(cliente,medico,animal,consulta);
+       menu_principal(cliente,medico,animal,consulta);
+       guardar_dados(cliente,medico,animal,consulta);
+
+       }
